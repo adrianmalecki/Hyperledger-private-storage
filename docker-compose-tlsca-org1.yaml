@@ -1,0 +1,35 @@
+version: '2'
+networks:
+  fabric:
+services:
+  tlsca.org1.com:
+    image: hyperledger/fabric-ca:latest
+    hostname: tlsca.org1.com
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=roottlsca
+      - FABRIC_CA_SERVER_TLS_ENABLED=false
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/server.crt
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/server.key
+      - FABRIC_CA_SERVER_PORT=8054
+    ports:
+      - "10.26.28.30:8054:8054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/server.crt --ca.keyfile /etc/hyperledger/fabric-ca-server-config/server.key -b admin:adminpw -d'
+    volumes:
+      - ./tlsca:/etc/hyperledger/fabric-ca-server-config
+    networks:
+      fabric:
+        aliases:
+          - tlsca.org1.com
+
+    extra_hosts:
+     - "orderer1.org1.com:10.26.28.33"
+     - "orderer1.org2.com:10.26.28.39"
+     - "peer1.org1.com:10.26.28.31"
+     - "peer2.org1.com:10.26.28.34"
+     - "peer1.org2.com:10.26.28.37"
+     - "peer2.org2.com:10.26.28.38"
+     - "tlsca.org1.com:10.26.28.30"
+     - "ca.org1.com:10.26.28.32"
+     - "ca.org2.com:10.26.28.36"
+     - "tlsca.org2.com:10.26.28.35"
